@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Custom Widget Demo</title>
+    
+        <link rel="stylesheet" href="Assets/SeriesFinder.css">
+    </head>
+    
+    <body>
+        <h1>Series Finder</h1>
+        <div class="widget-container">
+            <div id="MyCustomWidget"
+                data-component="CustomWidget"
+                data-sp="api_custom_GetPocketPlatformSeries"
+                data-template="/Widgets/PocketPlatformSermons/Template/SeriesFinder.html"
+                data-requireUser="false"
+                data-params="@Path=/Widgets/PocketPlatformSermons/demo2.html"
+                data-cache="false"
+                data-host="pureheart"
+            ></div>
+        </div>            
+
+        <script src="Assets/SeriesFinder.js"></script>
+        <script type="text/javascript" src="/dist/js/customWidgetV1.js"></script>
+    </body>
+</html>
