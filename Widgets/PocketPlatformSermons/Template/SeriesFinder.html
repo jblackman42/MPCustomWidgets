@@ -8,7 +8,7 @@
   {% for element in DataSet1 %}
       <a class="series-card" href="{{element.Series_URL}}">
         <div class="image-container">
-          <img src="https://my.pureheart.org/ministryplatformapi/files/{{element.UniqueFileId}}" alt="{{element.Title}}">
+          <img src="{{element.Image_URL}}" alt="{{element.Title}}">
         </div>
         <div class="series-body">
           <div class="meta">

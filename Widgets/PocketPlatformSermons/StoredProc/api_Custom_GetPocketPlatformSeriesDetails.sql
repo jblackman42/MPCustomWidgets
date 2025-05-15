@@ -2,27 +2,28 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[api_custom_GetPocketPlatformSeries]') AND type in (N'P', N'PC'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[api_custom_GetPocketPlatformSeriesDetails]') AND type in (N'P', N'PC'))
 BEGIN
-EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE [dbo].[api_custom_GetPocketPlatformSeries] AS' 
+EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE [dbo].[api_custom_GetPocketPlatformSeriesDetails] AS' 
 END
 GO
 
 
 
 -- =============================================
--- api_Custom_GetPocketPlatformSeries
+-- api_Custom_GetPocketPlatformSeriesDetails
 -- =============================================
--- Description:		This stored procedure returns a list of Pocket Platform sermon series'
+-- Description:		This stored procedure returns a list of Pocket Platform sermon series details'
 -- Last Modified:	5/14/2025
 -- JD Blackman
 -- Updates:
 -- =============================================
-ALTER PROCEDURE [dbo].[api_custom_GetPocketPlatformSeries] 
+ALTER PROCEDURE [dbo].[api_custom_GetPocketPlatformSeriesDetails] 
 	@DomainID int,
 	@Username nvarchar(75) = null,
-    @Page int = 1,
-    @Path nvarchar(100) = ''
+    @SeriesID int = 0,
+    @Path nvarchar(100) = '',
+    @ReturnPath nvarchar(100) = ''
 AS
 BEGIN
     -- https://my.pureheart.org/ministryplatformapi/files/{F.Unique_Name}
@@ -41,7 +42,7 @@ BEGIN
         , SS.Series_Start_Date
         , (SELECT TOP 1 PS.Sermon_Date FROM Pocket_Platform_Sermons PS WHERE EXISTS(SELECT TOP 1 1 FROM Pocket_Platform_Sermon_Links SL WHERE SL.Sermon_ID = PS.Sermon_ID AND SL.Link_Type_ID = 5 AND SL.Status_ID = 3) AND PS.Series_ID = SS.Sermon_Series_ID AND PS.Status_ID = 3 ORDER BY PS.Sermon_Date DESC) AS Series_End_Date
         , (SELECT COUNT(PS.Sermon_ID) FROM Pocket_Platform_Sermons PS WHERE EXISTS(SELECT TOP 1 1 FROM Pocket_Platform_Sermon_Links SL WHERE SL.Sermon_ID = PS.Sermon_ID AND SL.Link_Type_ID = 5 AND SL.Status_ID = 3) AND PS.Series_ID = SS.Sermon_Series_ID AND PS.Status_ID = 3) AS Series_Sermon_Count
-        , CONCAT(@Path, '?SeriesID=', SS.Sermon_Series_ID) AS Series_URL
+        , @ReturnPath AS Return_Path
         , SS.Congregation_ID
         , C.Congregation_Name
         , CONCAT(@FileBaseURL, F.Unique_Name) AS Image_URL
@@ -50,25 +51,43 @@ BEGIN
     LEFT JOIN Congregations C ON C.Congregation_ID = SS.Congregation_ID
     LEFT JOIN dp_Files F ON F.Page_ID = 516 AND F.Record_ID = SS.Sermon_Series_ID AND F.Default_Image = 1
     WHERE SS.Status_ID = 3
-    AND EXISTS(SELECT TOP 1 PS.Sermon_Date FROM Pocket_Platform_Sermons PS WHERE EXISTS(SELECT TOP 1 1 FROM Pocket_Platform_Sermon_Links SL WHERE SL.Sermon_ID = PS.Sermon_ID AND SL.Link_Type_ID = 5 AND SL.Status_ID = 3) AND PS.Series_ID = SS.Sermon_Series_ID AND PS.Status_ID = 3)
-    ORDER BY SS.[Position] DESC
-    OFFSET (@Page - 1) * @PageSize ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
+    AND SS.Sermon_Series_ID = @SeriesID
 
-    -- Get total count for pagination
     SELECT
-          @Page AS CurrentPage
-        , COUNT(*) AS TotalCount
-    FROM Pocket_Platform_Sermon_Series SS
-    WHERE SS.Status_ID = 3
-    AND EXISTS(SELECT TOP 1 PS.Sermon_Date FROM Pocket_Platform_Sermons PS WHERE EXISTS(SELECT TOP 1 1 FROM Pocket_Platform_Sermon_Links SL WHERE SL.Sermon_ID = PS.Sermon_ID AND SL.Link_Type_ID = 5 AND SL.Status_ID = 3) AND PS.Series_ID = SS.Sermon_Series_ID AND PS.Status_ID = 3);
+        PS.Sermon_ID
+        , PS.Series_ID
+        , PS.Congregation_ID
+        , C.Congregation_Name
+        , PS.Service_Type_ID
+        , ST.Service_Type
+        , PS.Title
+        , PS.Subtitle
+        , PS.Sermon_Date
+        , PS.Speaker_ID
+        , PPS.Display_Name AS Speaker_Name
+        , PS.Scripture_Links
+        , PS.[Position]
+        , PS.Notes_Form_ID
+        , PS.Sermon_UUID
+        , CONCAT(@FileBaseURL, F.Unique_Name) AS Image_URL
+        , CONCAT(@Path, '?SermonID=', PS.Sermon_ID) AS Sermon_URL
+    FROM Pocket_Platform_Sermons PS
+    LEFT JOIN Pocket_Platform_Service_Types ST ON ST.Service_Type_ID = PS.Service_Type_ID
+    LEFT JOIN Congregations C ON C.Congregation_ID = PS.Congregation_ID
+    LEFT JOIN dp_Files F ON F.Page_ID = 517 AND F.Record_ID = PS.Sermon_ID AND F.Default_Image = 1
+    LEFT JOIN Pocket_Platform_Speakers PPS ON PPS.Speaker_ID = PS.Speaker_ID
+    WHERE PS.Series_ID = @SeriesID
+    AND PS.Status_ID = 3
+    AND EXISTS(SELECT TOP 1 SL.Sermon_Link_ID FROM Pocket_Platform_Sermon_Links SL WHERE SL.Sermon_ID = PS.Sermon_ID AND SL.Link_Type_ID = 5 AND SL.Status_ID = 3)
+    ORDER BY PS.[Position]
+
 END
 GO
 
 -- ========================================================================================
 -- SP MetaData Install
 -- ========================================================================================
-DECLARE @spName nvarchar(128) = 'api_custom_GetPocketPlatformSeries'
+DECLARE @spName nvarchar(128) = 'api_custom_GetPocketPlatformSeriesDetails'
 DECLARE @spDescription nvarchar(500) = 'This stored procedure returns a list of Pocket Platform sermon series'
 
 IF NOT EXISTS (SELECT API_Procedure_ID FROM dp_API_Procedures WHERE Procedure_Name = @spName)

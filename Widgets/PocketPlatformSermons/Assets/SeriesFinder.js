@@ -1,6 +1,6 @@
 function changePage(widgetId, newPage) {
     // Get the widget element
-    const widget = document.querySelector(`[data-component="CustomWidget"]#${widgetId}`);
+    const widget = document.querySelector(`#${widgetId}`);
     if (!widget) return;
     
     // Update the data-params attribute to include the page
@@ -19,11 +19,3 @@ function changePage(widgetId, newPage) {
     // Reinitialize the widget
     window.ReInitWidget(widgetId);
 }
-
-function handclick(event) {
-    console.log('click');
-}
-
-window.addEventListener('widgetLoaded', function(event) {
-    console.log('Widget loaded:', event.detail);
-});
