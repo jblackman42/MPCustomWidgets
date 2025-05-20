@@ -6,16 +6,24 @@
         <title>Custom Widget Demo</title>
     
         <link rel="stylesheet" href="Assets/PocketPlatformSermons.css">
+        <script src="https://kit.fontawesome.com/57c92215da.js" crossorigin="anonymous"></script>
     </head>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
     
     <body>
-        <h1>Series Details</h1>
+        <h1>Sermon Player</h1>
         <div id="MyCustomWidget"
             data-component="CustomWidget"
-            data-sp="api_custom_GetPocketPlatformSeriesDetails"
-            data-template="/Widgets/PocketPlatformSermons/Template/SeriesDetails.html"
+            data-sp="api_custom_GetPocketPlatformSermon"
+            data-template="/Widgets/PocketPlatformSermons/Template/SermonPlayer.html"
             data-requireUser="false"
-            data-params="@Path=/Widgets/PocketPlatformSermons/demo3.html&@ReturnPath=/Widgets/PocketPlatformSermons/demo.html"
+            data-params="@ReturnPath=/Widgets/PocketPlatformSermons/demo2.html&@Path=/Widgets/PocketPlatformSermons/demo3.html"
             data-cache="false"
             data-host="pureheart"
         ></div>

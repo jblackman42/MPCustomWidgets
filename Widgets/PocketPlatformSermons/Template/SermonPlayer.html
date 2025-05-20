@@ -1,0 +1,47 @@
+<div class="widget-container full-width" style="background-color: #000000;">
+    <div class="video-container">
+        <iframe src="{{DataSet1[0].YouTube_URL}}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+</div>
+<div class="widget-container sermon-details">
+    <div class="sermon-body">
+        <div class="sermon-meta">
+            <h1>{{DataSet1[0].Title}}</h1>
+            <p>{{DataSet1[0].Subtitle}}</p>
+        </div>
+        <div class="sermon-links">
+            {% if DataSet1[0].Sermon_Date %}
+                <p>{{DataSet1[0].Sermon_Date | date: "%B %-d, %Y"}} | {{DataSet1[0].Speaker_Name}}</p>
+            {% endif %}
+            <div class="sermon-links-container">
+                {% for element in DataSet2 %}
+                    <a class="button" href="{{element.Link_URL}}" target="_blank">{{element.Sermon_Link_Type}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if DataSet3.size > 1 %}
+        <div class="series-list">
+            <h2>Sermons in this Series:</h2>
+            <div class="series-list-items">
+                {% for element in DataSet3 %}
+                    <a class="series-list-item{% if element.Sermon_ID == DataSet1[0].Sermon_ID %} selected{% endif %}" {% if element.Sermon_ID != DataSet1[0].Sermon_ID %}href="{{element.Sermon_URL}}"{% endif %}>
+                        <div class="image-container">
+                            <img src="{{element.Image_URL}}" alt="{{element.Series_Title}}">
+                        </div>
+                        <div class="series-list-item-body">
+                            <h2>{{element.Title}}</h2>
+                            <p>{{element.Subtitle}}</p>
+                            <p style="margin-top: auto; text-align: right;">{{element.Sermon_Date | date: "%B %-d, %Y"}}</p>
+                            <p style="text-align: right;">{{element.Speaker_Name}}</p>
+                            {% if element.Sermon_ID == DataSet1[0].Sermon_ID %}
+                                <div class="current-sermon"><h1><i class="fa-solid fa-play"></i></h1></div>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
