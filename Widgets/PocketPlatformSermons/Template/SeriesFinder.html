@@ -1,45 +1,43 @@
-<div class="widget-container">
-  <div class="series-container">
-    {% assign current_page = DataSet2[0].CurrentPage %}
-    {% assign total_items = DataSet2[0].TotalCount %}
-    {% assign items_per_page = 12 %}
-    {% assign total_pages = total_items | divided_by: items_per_page %}
-  
-    {% comment %}Show the current subset of items{% endcomment %}
-    {% for element in DataSet1 %}
-        <a class="series-card" href="{{element.Series_URL}}">
-          <div class="image-container">
-            <img src="{{element.Image_URL}}" alt="{{element.Title}}">
+<div class="widget-container series-container">
+  {% assign current_page = DataSet2[0].CurrentPage %}
+  {% assign total_items = DataSet2[0].TotalCount %}
+  {% assign items_per_page = 12 %}
+  {% assign total_pages = total_items | divided_by: items_per_page %}
+
+  {% comment %}Show the current subset of items{% endcomment %}
+  {% for element in DataSet1 %}
+      <a class="series-card" href="{{element.Series_URL}}">
+        <div class="image-container">
+          <img src="{{element.Image_URL}}" alt="{{element.Title}}">
+        </div>
+        <div class="series-body">
+          <div class="meta">
+            {% if element.Series_Start_Date == element.Series_End_Date %}
+              <p>{{element.Series_Start_Date | date: "%b %-d, %Y"}}</p>
+            {% else %}
+              <p>{{element.Series_Start_Date | date: "%b %-d, %Y"}} - {{element.Series_End_Date | date: "%b %-d, %Y"}}</p>
+            {% endif %}
+
+            <p>{{element.Series_Sermon_Count}} Sermon{%if element.Series_Sermon_Count != 1 %}s{%endif%}</p>
           </div>
-          <div class="series-body">
-            <div class="meta">
-              {% if element.Series_Start_Date == element.Series_End_Date %}
-                <p>{{element.Series_Start_Date | date: "%b %-d, %Y"}}</p>
-              {% else %}
-                <p>{{element.Series_Start_Date | date: "%b %-d, %Y"}} - {{element.Series_End_Date | date: "%b %-d, %Y"}}</p>
-              {% endif %}
-  
-              <p>{{element.Series_Sermon_Count}} Sermon{%if element.Series_Sermon_Count != 1 %}s{%endif%}</p>
-            </div>
-            <h3>{{element.Title}}</h3>
-          </div>
-        </a>
-    {% endfor %}
-  
-    <div class="pagination-controls">
-      {% if current_page > 1 %}
-        <button onclick="changePage('{{widgetId}}', '{{current_page | minus: 1}}')" class="prev-btn">Previous</button>
-      {% else %}
-        <button class="prev-btn" disabled>Previous</button>
-      {% endif %}
-      
-      <span class="page-info">Page {{current_page}} of {{total_pages | ceil}}</span>
-      
-      {% if current_page < total_pages %}
-        <button onclick="changePage('{{widgetId}}', '{{current_page | plus: 1}}')" class="next-btn">Next</button>
-      {% else %}
-        <button class="next-btn" disabled>Next</button>
-      {% endif %}
-    </div>
+          <h3>{{element.Title}}</h3>
+        </div>
+      </a>
+  {% endfor %}
+
+  <div class="pagination-controls">
+    {% if current_page > 1 %}
+      <button onclick="changePage('{{widgetId}}', '{{current_page | minus: 1}}')" class="prev-btn">Previous</button>
+    {% else %}
+      <button class="prev-btn" disabled>Previous</button>
+    {% endif %}
+    
+    <span class="page-info">Page {{current_page}} of {{total_pages | ceil}}</span>
+    
+    {% if current_page < total_pages %}
+      <button onclick="changePage('{{widgetId}}', '{{current_page | plus: 1}}')" class="next-btn">Next</button>
+    {% else %}
+      <button class="next-btn" disabled>Next</button>
+    {% endif %}
   </div>
 </div>

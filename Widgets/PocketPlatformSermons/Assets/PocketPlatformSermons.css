@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 .widget-container {
     /* Variables */
     --primary-color: #f9f9f9;
@@ -10,24 +22,46 @@
 
     --radius: 0.5rem;
     --shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+
+    /* RESET STYLES */
+    /* 1. Use a more-intuitive box-sizing model */
+    &, *, *::before, *::after {
+        box-sizing: border-box;
+    }
     
+    /* 2. Remove default margin */
+    * {
+        margin: 0;
+    }
     
-    /* Basic reset styles */
+    /* 6. Improve media defaults */
+    img, picture, video, canvas, svg {
+        display: block;
+        max-width: 100%;
+    }
+    
+    /* 7. Inherit fonts for form controls */
+    input, button, textarea, select {
+        font: inherit;
+    }
+    
+    /* 8. Avoid text overflows */
+    p, h1, h2, h3, h4, h5, h6 {
+        overflow-wrap: break-word;
+    }
+    
+    /* 9. Improve line wrapping */
+    p {
+        text-wrap: pretty;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        text-wrap: balance;
+    }
+    
     font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 100%;
     margin: 0 auto;
     padding: 0 0.5rem;
-    box-sizing: border-box;
-    * {
-        box-sizing: border-box;
-        font-family: inherit;
-        padding: 0;
-        font-weight: normal;
-        font-style: normal;
-        text-transform: none;
-        text-decoration: none;
-        line-height: 1;
-    }
 
     /* Responsive styles */
     @media screen and (max-width: 576px) { max-width: 540px; };
@@ -79,13 +113,14 @@
         font-size: clamp(1.5rem, 1.5vw, 2rem);
     }
     p {
-        font-size: clamp(0.8rem, 1.5vw, 1rem);
+        font-size: clamp(1rem, 1.5vw, 1rem);
         color: var(--primary-foreground);
         margin: 0;
     }
 
     button, a.button {
         display: inline-block;
+        white-space: nowrap;
         text-decoration: none;
         border: 2px solid var(--smoky);
         padding: 0.35rem 1rem;
@@ -106,7 +141,7 @@
     }
 
     /* Series Finder */
-    .series-container {
+    &.series-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem 1rem;
@@ -188,7 +223,7 @@
     }
 
     /* Series Details */
-    .series-details-container {
+    &.series-details-container {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem 1rem;
@@ -305,6 +340,12 @@
             .sermon-links {
                 gap: 0.75rem;
                 text-align: right;
+                .sermon-links-container {
+                    justify-content: flex-end;
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                }
             }
         }
 
