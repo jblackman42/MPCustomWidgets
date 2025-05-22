@@ -1,31 +1,33 @@
-<div class="widget-container series-details-container">
-    <div class="series-details">
-        <div class="series-body">
-            <h2>{{DataSet1[0].Title}}</h2>
-            <div class="series-meta">
-                <p>{{DataSet1[0].Series_Sermon_Count}} Sermon{%if DataSet1[0].Series_Sermon_Count != 1 %}s{%endif%}</p>
-                {% if DataSet1[0].Series_Start_Date == DataSet1[0].Series_End_Date %}
-                <p>{{DataSet1[0].Series_Start_Date | date: "%b %-d, %Y"}}</p>
-                {% else %}
-                <p>{{DataSet1[0].Series_Start_Date | date: "%b %-d, %Y"}} - {{DataSet1[0].Series_End_Date | date: "%b %-d, %Y"}}</p>
-                {% endif %}
+<div class="widget-container">
+    <div class="series-details-container">
+        <div class="series-details">
+            <div class="series-body">
+                <h2>{{DataSet1[0].Title}}</h2>
+                <div class="series-meta">
+                    <p>{{DataSet1[0].Series_Sermon_Count}} Sermon{%if DataSet1[0].Series_Sermon_Count != 1 %}s{%endif%}</p>
+                    {% if DataSet1[0].Series_Start_Date == DataSet1[0].Series_End_Date %}
+                    <p>{{DataSet1[0].Series_Start_Date | date: "%b %-d, %Y"}}</p>
+                    {% else %}
+                    <p>{{DataSet1[0].Series_Start_Date | date: "%b %-d, %Y"}} - {{DataSet1[0].Series_End_Date | date: "%b %-d, %Y"}}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="image-container">
+                <img src="{{DataSet1[0].Image_URL}}" alt="{{DataSet1[0].Title}}">
             </div>
         </div>
-        <div class="image-container">
-            <img src="{{DataSet1[0].Image_URL}}" alt="{{DataSet1[0].Title}}">
+        <div class="sermons-container">
+            {% for element in DataSet2 %}
+                <a class="sermon-card" href="{{element.Sermon_URL}}">
+                    <div class="image-container">
+                        <img src="{{element.Image_URL}}" alt="{{element.Title}}">
+                    </div>
+                    <div class="sermon-body">
+                        <h2>{{element.Title}}</h2>
+                        <p>{{element.Sermon_Date | date: "%b %-d, %Y"}} | {{element.Speaker_Name}}</p>
+                    </div>
+                </a>
+            {% endfor %}
         </div>
-    </div>
-    <div class="sermons-container">
-        {% for element in DataSet2 %}
-            <a class="sermon-card" href="{{element.Sermon_URL}}">
-                <div class="image-container">
-                    <img src="{{element.Image_URL}}" alt="{{element.Title}}">
-                </div>
-                <div class="sermon-body">
-                    <h2>{{element.Title}}</h2>
-                    <p>{{element.Sermon_Date | date: "%b %-d, %Y"}} | {{element.Speaker_Name}}</p>
-                </div>
-            </a>
-        {% endfor %}
     </div>
 </div>
